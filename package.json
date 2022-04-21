@@ -4,10 +4,8 @@
   "description": "rss feed project",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "develop": "webpack serve"
   },
   "repository": {
     "type": "git",
