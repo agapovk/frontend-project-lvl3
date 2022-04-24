@@ -1,14 +1,16 @@
+import renderFeeds from "./renders/feeds";
+import renderPosts from "./renders/posts";
+import renderFeedback from "./renders/feedback";
+
 export default (state, elements) => {
-  const { rssForm } = state;
-  const { feedback, input } = elements;
+  console.log(state);
 
-  rssForm.isError
-    ? (input.classList.add("is-invalid"),
-      feedback.classList.add("text-danger"),
-      feedback.classList.remove("text-success"))
-    : (input.classList.remove("is-invalid"),
-      feedback.classList.add("text-success"),
-      feedback.classList.remove("text-danger"));
+  // Feedback
+  renderFeedback(state, elements);
 
-  feedback.textContent = rssForm.feedback;
+  // Feeds
+  renderFeeds(state, elements);
+
+  // Posts
+  renderPosts(state, elements);
 };

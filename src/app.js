@@ -2,11 +2,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import * as yup from "yup";
 import onChange from "on-change";
 import i18next from "i18next";
+import _ from "lodash";
 
 import view from "./view";
 import ru from "./locales/ru";
 import parseRSS from "./parser";
-import _ from "lodash";
+import getFeed from "./getFeed";
 
 i18next.init({
   lng: "ru",
@@ -16,7 +17,10 @@ i18next.init({
   },
 });
 
-const schema = yup.string().required().url(i18next.t("urlErr"));
+const validate = (url, links) => {
+  const schema = yup.string().url(i18next.t("urlErr")).notOneOf(links);
+  return schema.validateSync(url);
+};
 
 const elements = {
   form: document.querySelector(".rss-form"),
@@ -38,33 +42,18 @@ export default () => {
     },
   };
 
+  const updatePosts = (state) => {
+    console.log("update!");
+    setTimeout(() => {
+      updatePosts(state);
+    }, 5000);
+  };
+
   const watchedState = onChange(state, (path, value) => {
-    console.dir(state);
+    // console.dir(state);
     view(state, elements);
   });
 
-  // download RSS
-  const fetchRss = (url) => {
-    fetch(
-      `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(
-        url
-      )}`
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(i18next.t("netErr"));
-      })
-      .then((data) => parseRSS(state, data.contents))
-      .then(({ feed, posts }) => {
-        watchedState.feeds.push(feed);
-        const newPosts = [...state.posts, ...posts];
-        watchedState.posts = newPosts;
-      })
-      .catch((err) => {
-        watchedState.rssForm.isError = true;
-        watchedState.rssForm.feedback = err.message;
-      });
-  };
   const { form, input, examples, feedback } = elements;
 
   // easy paste link to input
@@ -77,20 +66,38 @@ export default () => {
   // form listener
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    schema
-      .validate(input.value)
-      .then((result) => {
-        fetchRss(result);
-      })
-      .then((data) => {
-        console.log("data " + data);
+    feedback.textContent = "";
+
+    // validate input
+    try {
+      validate(
+        input.value,
+        state.feeds.map((feed) => feed.link)
+      );
+    } catch (err) {
+      console.error(err.message);
+      watchedState.rssForm.isError = true;
+      watchedState.rssForm.feedback = err.message;
+      return;
+    }
+
+    getFeed(input.value)
+      .then(({ data }) => parseRSS(state, data.contents))
+      .then(({ feed, posts }) => {
+        watchedState.feeds.push(feed);
+        const newPosts = [...state.posts, ...posts];
+        watchedState.posts = newPosts;
+
         watchedState.rssForm.feedback = i18next.t("done");
         watchedState.rssForm.isError = false;
       })
       .catch((err) => {
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
+        return;
       });
+
+    updatePosts(state);
 
     // clear input and focus
     input.value = "";

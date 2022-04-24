@@ -12,6 +12,7 @@ export default (state, data) => {
   const doc = parser.parseFromString(data, "application/xml");
   const items = doc.querySelectorAll("item");
   const errorNode = doc.querySelector("parsererror");
+
   if (errorNode) throw new Error(i18next.t("rssErr"));
   else {
     const feed = {
