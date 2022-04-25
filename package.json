@@ -13,6 +13,7 @@
   },
   "author": "Agapov Konstantin",
   "license": "ISC",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/agapovk/frontend-project-lvl3/issues"
   },
