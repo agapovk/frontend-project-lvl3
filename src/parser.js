@@ -1,5 +1,4 @@
 import i18next from "i18next";
-import _ from "lodash";
 
 export default (data) => {
   const parser = new DOMParser();

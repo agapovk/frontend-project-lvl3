@@ -7,7 +7,8 @@ import renderModal from "./renders/modal";
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, currentValue) => {
-    console.log("path: " + path + " , value: " + currentValue);
+    console.log(`path: ${path} , value: ${currentValue}`);
+
     // Feedback
     if (path === "rssForm.feedback") renderFeedback(state, elements);
 

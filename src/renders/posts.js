@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-expressions */
 import i18next from "i18next";
 
 const buildButton = (post) => {

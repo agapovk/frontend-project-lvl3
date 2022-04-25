@@ -8,7 +8,6 @@ import ru from "./locales/ru";
 import parseRSS from "./parser";
 import getFeed from "./getFeed";
 import loadPosts from "./loadPosts";
-import { doc } from "prettier";
 
 i18next.init({
   lng: "ru",
@@ -120,13 +119,9 @@ export default () => {
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
       });
-
-    // clear input and focus
-    // input.value = "";
-    // input.focus();
   });
 
-  // updatePosts(watchedState);
+  updatePosts(watchedState);
 
   postsDiv.addEventListener("click", (e) => {
     const { target } = e;

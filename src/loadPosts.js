@@ -1,11 +1,10 @@
+/* eslint-disable no-param-reassign */
 import _ from "lodash";
 import parser from "./parser";
 import getFeed from "./getFeed";
 
 export default (watchedState) => {
-  const requests = watchedState.feeds.map((feed) => {
-    return getFeed(feed.link);
-  });
+  const requests = watchedState.feeds.map((feed) => getFeed(feed.link));
 
   return Promise.all(requests).then((data) =>
     data.forEach((feed) => {
@@ -18,7 +17,8 @@ export default (watchedState) => {
         feedId: feed.id,
       }));
 
-      watchedState.posts.push(...newPostsWithId);
+      const newPostsToAdd = [...newPostsWithId, ...watchedState.posts];
+      watchedState.posts = newPostsToAdd;
     })
   );
 };

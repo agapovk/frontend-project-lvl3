@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 export default (state, elements) => {
   const { rssForm } = state;
   const { feedback, input } = elements;
