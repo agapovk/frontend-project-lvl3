@@ -1,13 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import * as yup from "yup";
-import onChange from "on-change";
 import i18next from "i18next";
 import _ from "lodash";
 
-import view from "./view";
+import getWatchedState from "./view";
 import ru from "./locales/ru";
 import parseRSS from "./parser";
 import getFeed from "./getFeed";
+import loadPosts from "./loadPosts";
+import { doc } from "prettier";
 
 i18next.init({
   lng: "ru",
@@ -17,9 +18,18 @@ i18next.init({
   },
 });
 
-const validate = (url, links) => {
-  const schema = yup.string().url(i18next.t("urlErr")).notOneOf(links);
-  return schema.validateSync(url);
+const validate = (currentUrl, links) => {
+  const schema = yup
+    .string()
+    .url(i18next.t("urlErr"))
+    .notOneOf(links, i18next.t("exist"));
+  return schema.validateSync(currentUrl);
+};
+
+const updatePosts = (watchedState) => {
+  setTimeout(() => {
+    loadPosts(watchedState).finally(() => updatePosts(watchedState));
+  }, 5000);
 };
 
 const elements = {
@@ -29,6 +39,9 @@ const elements = {
   examples: document.querySelectorAll(".example"),
   postsDiv: document.querySelector(".posts"),
   feedsDiv: document.querySelector(".feeds"),
+  modalTitle: document.querySelector(".modal-title"),
+  modalDescription: document.querySelector(".modal-description"),
+  modalLinkToPost: document.querySelector(".full-article"),
 };
 
 export default () => {
@@ -40,25 +53,18 @@ export default () => {
       feedback: "",
       isError: false,
     },
+    modal: {
+      modalPostId: null,
+    },
   };
 
-  const updatePosts = (state) => {
-    console.log("update!");
-    setTimeout(() => {
-      updatePosts(state);
-    }, 5000);
-  };
+  const watchedState = getWatchedState(state, elements);
 
-  const watchedState = onChange(state, (path, value) => {
-    // console.dir(state);
-    view(state, elements);
-  });
-
-  const { form, input, examples, feedback } = elements;
+  const { form, input, examples, feedback, postsDiv } = elements;
 
   // easy paste link to input
   examples.forEach((example) => {
-    example.addEventListener("click", (e) => {
+    example.addEventListener("click", () => {
       input.value = example.textContent;
     });
   });
@@ -66,41 +72,72 @@ export default () => {
   // form listener
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    const currentUrl = input.value;
+
     feedback.textContent = "";
+    input.value = "";
+    input.focus();
 
     // validate input
     try {
       validate(
-        input.value,
+        currentUrl,
         state.feeds.map((feed) => feed.link)
       );
     } catch (err) {
-      console.error(err.message);
       watchedState.rssForm.isError = true;
       watchedState.rssForm.feedback = err.message;
       return;
     }
 
-    getFeed(input.value)
-      .then(({ data }) => parseRSS(state, data.contents))
+    getFeed(currentUrl)
+      .then(({ data }) => parseRSS(data.contents))
       .then(({ feed, posts }) => {
-        watchedState.feeds.push(feed);
-        const newPosts = [...state.posts, ...posts];
+        const feedId = _.uniqueId("feed_");
+        const feedWithId = {
+          ...feed,
+          id: feedId,
+          link: currentUrl,
+        };
+
+        const posstsWithId = posts.map((post) => ({
+          ...post,
+          id: _.uniqueId("post_"),
+          feedId,
+        }));
+
+        const newFeeds = [feedWithId, ...watchedState.feeds];
+        const newPosts = [...posstsWithId, ...watchedState.posts];
+
+        watchedState.feeds = newFeeds;
         watchedState.posts = newPosts;
 
-        watchedState.rssForm.feedback = i18next.t("done");
         watchedState.rssForm.isError = false;
+        watchedState.rssForm.feedback = i18next.t("done");
       })
       .catch((err) => {
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
-        return;
       });
 
-    updatePosts(state);
-
     // clear input and focus
-    input.value = "";
-    input.focus();
+    // input.value = "";
+    // input.focus();
+  });
+
+  // updatePosts(watchedState);
+
+  postsDiv.addEventListener("click", (e) => {
+    const { target } = e;
+    const btnId = target.dataset.id; // select <a> or <btn> with "data-id" attribute
+
+    if (btnId) {
+      watchedState.modal.modalPostId = btnId;
+      const currentPostIndex = watchedState.posts.findIndex(
+        (post) => post.id === btnId
+      );
+      watchedState.posts[currentPostIndex].isViewed = true;
+    }
   });
 };

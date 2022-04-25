@@ -27,7 +27,7 @@ export default ({ feeds }, { feedsDiv }) => {
     return li;
   });
 
-  ul.append(...liElements.reverse());
+  ul.append(...liElements);
 
   feedsDiv.append(ul);
 };

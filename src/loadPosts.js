@@ -1,0 +1,24 @@
+import _ from "lodash";
+import parser from "./parser";
+import getFeed from "./getFeed";
+
+export default (watchedState) => {
+  const requests = watchedState.feeds.map((feed) => {
+    return getFeed(feed.link);
+  });
+
+  return Promise.all(requests).then((data) =>
+    data.forEach((feed) => {
+      const { posts } = parser(feed.data.contents);
+      const newPosts = _.differenceBy(posts, watchedState.posts, "link");
+
+      const newPostsWithId = newPosts.map((newPost) => ({
+        ...newPost,
+        id: _.uniqueId(),
+        feedId: feed.id,
+      }));
+
+      watchedState.posts.push(...newPostsWithId);
+    })
+  );
+};
