@@ -3,11 +3,11 @@ import * as yup from "yup";
 import i18next from "i18next";
 import _ from "lodash";
 
-import getWatchedState from "./view";
-import ru from "./locales/ru";
-import parseRSS from "./parser";
-import getFeed from "./getFeed";
-import loadPosts from "./loadPosts";
+import getWatchedState from "./view.js";
+import ru from "./locales/ru.js";
+import parseRSS from "./parser.js";
+import getFeed from "./getFeed.js";
+import loadPosts from "./loadPosts.js";
 
 i18next.init({
   lng: "ru",

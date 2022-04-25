@@ -1,9 +1,9 @@
 import onChange from "on-change";
 
-import renderFeeds from "./renders/feeds";
-import renderPosts from "./renders/posts";
-import renderFeedback from "./renders/feedback";
-import renderModal from "./renders/modal";
+import renderFeeds from "./renders/feeds.js";
+import renderPosts from "./renders/posts.js";
+import renderFeedback from "./renders/feedback.js";
+import renderModal from "./renders/modal.js";
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, currentValue) => {

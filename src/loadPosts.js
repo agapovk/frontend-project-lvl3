@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 import _ from "lodash";
-import parser from "./parser";
-import getFeed from "./getFeed";
+
+import parser from "./parser.js";
+import getFeed from "./getFeed.js";
 
 export default (watchedState) => {
   const requests = watchedState.feeds.map((feed) => getFeed(feed.link));
