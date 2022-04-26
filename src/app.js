@@ -69,57 +69,58 @@ export default () => {
   });
 
   // form listener
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  if (form)
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-    const currentUrl = input.value;
+      const currentUrl = input.value;
 
-    feedback.textContent = "";
-    input.value = "";
-    input.focus();
+      feedback.textContent = "";
+      input.value = "";
+      input.focus();
 
-    // validate input
-    try {
-      validate(
-        currentUrl,
-        state.feeds.map((feed) => feed.link)
-      );
-    } catch (err) {
-      watchedState.rssForm.isError = true;
-      watchedState.rssForm.feedback = err.message;
-      return;
-    }
-
-    getFeed(currentUrl)
-      .then(({ data }) => parseRSS(data.contents))
-      .then(({ feed, posts }) => {
-        const feedId = _.uniqueId("feed_");
-        const feedWithId = {
-          ...feed,
-          id: feedId,
-          link: currentUrl,
-        };
-
-        const posstsWithId = posts.map((post) => ({
-          ...post,
-          id: _.uniqueId("post_"),
-          feedId,
-        }));
-
-        const newFeeds = [feedWithId, ...watchedState.feeds];
-        const newPosts = [...posstsWithId, ...watchedState.posts];
-
-        watchedState.feeds = newFeeds;
-        watchedState.posts = newPosts;
-
-        watchedState.rssForm.isError = false;
-        watchedState.rssForm.feedback = i18next.t("done");
-      })
-      .catch((err) => {
+      // validate input
+      try {
+        validate(
+          currentUrl,
+          state.feeds.map((feed) => feed.link)
+        );
+      } catch (err) {
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
-      });
-  });
+        return;
+      }
+
+      getFeed(currentUrl)
+        .then(({ data }) => parseRSS(data.contents))
+        .then(({ feed, posts }) => {
+          const feedId = _.uniqueId("feed_");
+          const feedWithId = {
+            ...feed,
+            id: feedId,
+            link: currentUrl,
+          };
+
+          const posstsWithId = posts.map((post) => ({
+            ...post,
+            id: _.uniqueId("post_"),
+            feedId,
+          }));
+
+          const newFeeds = [feedWithId, ...watchedState.feeds];
+          const newPosts = [...posstsWithId, ...watchedState.posts];
+
+          watchedState.feeds = newFeeds;
+          watchedState.posts = newPosts;
+
+          watchedState.rssForm.isError = false;
+          watchedState.rssForm.feedback = i18next.t("done");
+        })
+        .catch((err) => {
+          watchedState.rssForm.isError = true;
+          watchedState.rssForm.feedback = err.message;
+        });
+    });
 
   updatePosts(watchedState);
 
