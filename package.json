@@ -14,7 +14,7 @@
   "author": "Agapov Konstantin",
   "license": "ISC",
   "type": "module",
-  "main": "index.js",
+  "main": "src/app.js",
   "bugs": {
     "url": "https://github.com/agapovk/frontend-project-lvl3/issues"
   },
