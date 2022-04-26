@@ -59,7 +59,7 @@ export default () => {
 
   const watchedState = getWatchedState(state, elements);
 
-  const { form, input, examples, feedback, postsDiv } = elements;
+  const { form, input, examples, postsDiv } = elements;
 
   // easy paste link to input
   examples.forEach((example) => {
@@ -75,7 +75,7 @@ export default () => {
 
       const currentUrl = input.value;
 
-      feedback.textContent = "";
+      watchedState.rssForm.feedback = "";
       input.value = "";
       input.focus();
 
