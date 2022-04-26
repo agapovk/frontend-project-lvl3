@@ -123,7 +123,7 @@ export default () => {
 
   updatePosts(watchedState);
 
-  postsDiv.addEventListener("click", (e) => {
+  postsDiv?.addEventListener("click", (e) => {
     const { target } = e;
     const btnId = target.dataset.id; // select <a> or <btn> with "data-id" attribute
 
