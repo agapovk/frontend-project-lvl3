@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import * as yup from "yup";
 import i18next from "i18next";
 import _ from "lodash";
@@ -8,14 +7,6 @@ import ru from "./locales/ru.js";
 import parseRSS from "./parser.js";
 import getFeed from "./getFeed.js";
 import loadPosts from "./loadPosts.js";
-
-i18next.init({
-  lng: "ru",
-  debug: true,
-  resources: {
-    ru,
-  },
-});
 
 const validate = (currentUrl, links) => {
   const schema = yup
@@ -41,6 +32,7 @@ const elements = {
   modalTitle: document.querySelector(".modal-title"),
   modalDescription: document.querySelector(".modal-description"),
   modalLinkToPost: document.querySelector(".full-article"),
+  mainButton: document.querySelector("#main-button"),
 };
 
 export default () => {
@@ -51,11 +43,22 @@ export default () => {
       inputText: "",
       feedback: "",
       isError: false,
+      isInputDisabled: false,
     },
     modal: {
       modalPostId: null,
     },
   };
+
+  const i18nInstance = i18next.createInstance();
+
+  i18nInstance.init({
+    lng: "ru",
+    debug: true,
+    resources: {
+      ru,
+    },
+  });
 
   const watchedState = getWatchedState(state, elements);
 
@@ -72,7 +75,7 @@ export default () => {
   if (form)
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-
+      watchedState.rssForm.isInputDisabled = true;
       const currentUrl = input.value;
 
       watchedState.rssForm.feedback = "";
@@ -86,6 +89,7 @@ export default () => {
           state.feeds.map((feed) => feed.link)
         );
       } catch (err) {
+        watchedState.rssForm.isInputDisabled = false;
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
         return;
@@ -119,6 +123,9 @@ export default () => {
         .catch((err) => {
           watchedState.rssForm.isError = true;
           watchedState.rssForm.feedback = err.message;
+        })
+        .finally(() => {
+          watchedState.rssForm.isInputDisabled = false;
         });
     });
 

@@ -19,7 +19,14 @@
     "url": "https://github.com/agapovk/frontend-project-lvl3/issues"
   },
   "homepage": "https://github.com/agapovk/frontend-project-lvl3#readme",
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "jsdom"
+  },
   "devDependencies": {
+    "@testing-library/dom": "^8.13.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/user-event": "^14.1.1",
     "css-loader": "^6.7.1",
     "eslint": "^8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -27,7 +34,11 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^28.0.1",
+    "jest-environment-jsdom": "^28.0.1",
+    "msw": "^0.39.2",
     "prettier": "^2.6.2",
+    "read-package-json-fast": "^2.0.3",
     "sass": "^1.50.1",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
