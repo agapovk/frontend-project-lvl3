@@ -1,12 +1,13 @@
 /* eslint-disable no-param-reassign */
-import i18next from "i18next";
 
-export default ({ feeds }, { feedsDiv }) => {
+export default (state, elements, i18nInstance) => {
+  const { feeds } = state;
+  const { feedsDiv } = elements;
   feedsDiv.innerHTML = "";
 
   const feedsTitle = document.createElement("h2");
   feedsTitle.classList.add("h3", "p-2");
-  feedsTitle.textContent = i18next.t("feedsTitle");
+  feedsTitle.textContent = i18nInstance.t("feedsTitle");
   feedsDiv.append(feedsTitle);
 
   const ul = document.createElement("ul");

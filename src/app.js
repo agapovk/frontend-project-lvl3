@@ -8,11 +8,20 @@ import parseRSS from "./parser.js";
 import getFeed from "./getFeed.js";
 import loadPosts from "./loadPosts.js";
 
+const i18nInstance = i18next.createInstance();
+i18nInstance.init({
+  lng: "ru",
+  debug: true,
+  resources: {
+    ru,
+  },
+});
+
 const validate = (currentUrl, links) => {
   const schema = yup
     .string()
-    .url(i18next.t("urlErr"))
-    .notOneOf(links, i18next.t("exist"));
+    .url(i18nInstance.t("urlErr"))
+    .notOneOf(links, i18nInstance.t("exist"));
   return schema.validateSync(currentUrl);
 };
 
@@ -50,17 +59,7 @@ export default () => {
     },
   };
 
-  const i18nInstance = i18next.createInstance();
-
-  i18nInstance.init({
-    lng: "ru",
-    debug: true,
-    resources: {
-      ru,
-    },
-  });
-
-  const watchedState = getWatchedState(state, elements);
+  const watchedState = getWatchedState(state, elements, i18nInstance);
 
   const { form, input, examples, postsDiv } = elements;
 
@@ -96,7 +95,7 @@ export default () => {
       }
 
       getFeed(currentUrl)
-        .then(({ data }) => parseRSS(data.contents))
+        .then(({ data }) => parseRSS(data.contents, i18nInstance))
         .then(({ feed, posts }) => {
           const feedId = _.uniqueId("feed_");
           const feedWithId = {
@@ -118,7 +117,7 @@ export default () => {
           watchedState.posts = newPosts;
 
           watchedState.rssForm.isError = false;
-          watchedState.rssForm.feedback = i18next.t("done");
+          watchedState.rssForm.feedback = i18nInstance.t("done");
         })
         .catch((err) => {
           watchedState.rssForm.isError = true;

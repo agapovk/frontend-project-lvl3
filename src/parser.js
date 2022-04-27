@@ -1,12 +1,10 @@
-import i18next from "i18next";
-
-export default (data) => {
+export default (data, i18nInstance) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, "application/xml");
   const items = doc.querySelectorAll("item");
   const error = doc.querySelector("parsererror");
 
-  if (error) throw new Error(i18next.t("rssErr"));
+  if (error) throw new Error(i18nInstance.t("rssErr"));
   else {
     const feed = {
       title: doc.querySelector("title").textContent,

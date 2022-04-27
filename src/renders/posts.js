@@ -1,21 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
-import i18next from "i18next";
 
-const buildButton = (post) => {
-  const { id, isViewed } = post;
+const buildButton = (post, i18nInstance) => {
+  const { id } = post;
   const btn = document.createElement("button");
   btn.classList.add("btn", "btn-outline-primary", "btn-sm");
   btn.setAttribute("type", "button");
   btn.setAttribute("data-id", id);
   btn.setAttribute("data-bs-toggle", "modal");
   btn.setAttribute("data-bs-target", "#postModal");
-  btn.textContent = i18next.t("button");
+  btn.textContent = i18nInstance.t("button");
 
   return btn;
 };
 
-const buildListItem = (state, post) => {
+const buildListItem = (post) => {
   const { title, link, id, isViewed } = post;
   const li = document.createElement("li");
   li.classList.add(
@@ -43,7 +42,7 @@ const buildListItem = (state, post) => {
   return li;
 };
 
-export default (state, elements) => {
+export default (state, elements, i18nInstance) => {
   const { postsDiv } = elements;
   const { posts } = state;
 
@@ -51,16 +50,16 @@ export default (state, elements) => {
 
   const postsTitle = document.createElement("h2");
   postsTitle.classList.add("h3", "p-2");
-  postsTitle.textContent = i18next.t("postsTitle");
+  postsTitle.textContent = i18nInstance.t("postsTitle");
   postsDiv.append(postsTitle);
 
   const ul = document.createElement("ul");
   ul.classList.add("list-group", "border-0", "rounded-0");
 
   const liElements = posts.map((post) => {
-    const li = buildListItem(state, post);
+    const li = buildListItem(post);
 
-    const btn = buildButton(post);
+    const btn = buildButton(post, i18nInstance);
     li.append(btn);
 
     return li;
