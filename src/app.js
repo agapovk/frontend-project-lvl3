@@ -75,11 +75,10 @@ export default () => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       watchedState.rssForm.isInputDisabled = true;
-      const currentUrl = input.value;
+      const formData = new FormData(e.target);
+      const currentUrl = formData.get("url").trim();
 
       watchedState.rssForm.feedback = "";
-      input.value = "";
-      input.focus();
 
       // validate input
       try {
@@ -91,6 +90,8 @@ export default () => {
         watchedState.rssForm.isInputDisabled = false;
         watchedState.rssForm.isError = true;
         watchedState.rssForm.feedback = err.message;
+        input.value = "";
+        input.focus();
         return;
       }
 
@@ -125,6 +126,8 @@ export default () => {
         })
         .finally(() => {
           watchedState.rssForm.isInputDisabled = false;
+          input.value = "";
+          input.focus();
         });
     });
 
