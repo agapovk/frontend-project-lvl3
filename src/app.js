@@ -128,7 +128,7 @@ export default () => {
         });
     });
 
-  // updatePosts(watchedState);
+  updatePosts(watchedState);
 
   if (postsDiv)
     postsDiv.addEventListener("click", (e) => {
