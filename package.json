@@ -19,10 +19,6 @@
     "url": "https://github.com/agapovk/frontend-project-lvl3/issues"
   },
   "homepage": "https://github.com/agapovk/frontend-project-lvl3#readme",
-  "jest": {
-    "verbose": true,
-    "testEnvironment": "jsdom"
-  },
   "devDependencies": {
     "css-loader": "^6.7.1",
     "eslint": "^8.13.0",

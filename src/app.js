@@ -74,10 +74,11 @@ export default () => {
   if (form)
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      watchedState.rssForm.isInputDisabled = true;
+
       const formData = new FormData(e.target);
       const currentUrl = formData.get("url").trim();
 
+      watchedState.rssForm.isInputDisabled = true;
       watchedState.rssForm.feedback = "";
 
       // validate input
