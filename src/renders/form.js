@@ -4,8 +4,8 @@ export default (state, elements) => {
   const { input, mainButton } = elements;
 
   rssForm.isInputDisabled
-    ? (input.setAttribute("disabled", "disabled"),
+    ? (input.setAttribute("readonly", "true"),
       mainButton.setAttribute("disabled", "disabled"))
-    : (input.removeAttribute("disabled", "disabled"),
+    : (input.removeAttribute("readonly", "true"),
       mainButton.removeAttribute("disabled", "disabled"));
 };
