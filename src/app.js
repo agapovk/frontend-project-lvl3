@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as yup from "yup";
 import i18next from "i18next";
 import _ from "lodash";
@@ -31,19 +32,6 @@ const updatePosts = (watchedState) => {
   }, 5000);
 };
 
-const elements = {
-  form: document.querySelector(".rss-form"),
-  input: document.querySelector("#url-input"),
-  feedback: document.querySelector(".feedback"),
-  examples: document.querySelectorAll(".example"),
-  postsDiv: document.querySelector(".posts"),
-  feedsDiv: document.querySelector(".feeds"),
-  modalTitle: document.querySelector(".modal-title"),
-  modalDescription: document.querySelector(".modal-description"),
-  modalLinkToPost: document.querySelector(".full-article"),
-  mainButton: document.querySelector("#main-button"),
-};
-
 export default () => {
   const state = {
     posts: [],
@@ -59,6 +47,19 @@ export default () => {
     },
   };
 
+  const elements = {
+    form: document.querySelector(".rss-form"),
+    input: document.querySelector("#url-input"),
+    feedback: document.querySelector(".feedback"),
+    examples: document.querySelectorAll(".example"),
+    postsDiv: document.querySelector(".posts"),
+    feedsDiv: document.querySelector(".feeds"),
+    modalTitle: document.querySelector(".modal-title"),
+    modalDescription: document.querySelector(".modal-description"),
+    modalLinkToPost: document.querySelector(".full-article"),
+    mainButton: document.querySelector("#main-button"),
+  };
+
   const watchedState = getWatchedState(state, elements, i18nInstance);
 
   const { form, input, examples, postsDiv } = elements;
@@ -71,80 +72,82 @@ export default () => {
   });
 
   // form listener
-  if (form)
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+  // if (form)
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-      const formData = new FormData(e.target);
-      const currentUrl = formData.get("url").trim();
+    const formData = new FormData(e.target);
+    const currentUrl = formData.get("url").trim();
 
-      watchedState.rssForm.isInputDisabled = true;
-      watchedState.rssForm.feedback = "";
+    watchedState.rssForm.isInputDisabled = true;
+    watchedState.rssForm.feedback = "";
 
-      // validate input
-      try {
-        validate(
-          currentUrl,
-          state.feeds.map((feed) => feed.link)
-        );
-      } catch (err) {
-        watchedState.rssForm.isInputDisabled = false;
+    // validate input
+    try {
+      validate(
+        currentUrl,
+        state.feeds.map((feed) => feed.link)
+      );
+    } catch (err) {
+      watchedState.rssForm.isInputDisabled = false;
+      watchedState.rssForm.isError = true;
+      watchedState.rssForm.feedback = err.message;
+      input.value = "";
+      input.focus();
+      return;
+    }
+
+    getFeed(currentUrl)
+      .then(({ data }) => parseRSS(data.contents, i18nInstance))
+      .then(({ feed, posts }) => {
+        const feedId = _.uniqueId("feed_");
+        const feedWithId = {
+          ...feed,
+          id: feedId,
+          link: currentUrl,
+        };
+
+        const posstsWithId = posts.map((post) => ({
+          ...post,
+          id: _.uniqueId("post_"),
+          feedId,
+        }));
+
+        const newFeeds = [feedWithId, ...watchedState.feeds];
+        const newPosts = [...posstsWithId, ...watchedState.posts];
+
+        watchedState.feeds = newFeeds;
+        watchedState.posts = newPosts;
+
+        watchedState.rssForm.isError = false;
+        watchedState.rssForm.feedback = i18nInstance.t("done");
+      })
+      .catch((err) => {
         watchedState.rssForm.isError = true;
-        watchedState.rssForm.feedback = err.message;
+        err.isAxiosError
+          ? (watchedState.rssForm.feedback = i18nInstance.t("netErr"))
+          : (watchedState.rssForm.feedback = err.message);
+      })
+      .finally(() => {
+        watchedState.rssForm.isInputDisabled = false;
         input.value = "";
         input.focus();
-        return;
-      }
-
-      getFeed(currentUrl)
-        .then(({ data }) => parseRSS(data.contents, i18nInstance))
-        .then(({ feed, posts }) => {
-          const feedId = _.uniqueId("feed_");
-          const feedWithId = {
-            ...feed,
-            id: feedId,
-            link: currentUrl,
-          };
-
-          const posstsWithId = posts.map((post) => ({
-            ...post,
-            id: _.uniqueId("post_"),
-            feedId,
-          }));
-
-          const newFeeds = [feedWithId, ...watchedState.feeds];
-          const newPosts = [...posstsWithId, ...watchedState.posts];
-
-          watchedState.feeds = newFeeds;
-          watchedState.posts = newPosts;
-
-          watchedState.rssForm.isError = false;
-          watchedState.rssForm.feedback = i18nInstance.t("done");
-        })
-        .catch((err) => {
-          watchedState.rssForm.isError = true;
-          watchedState.rssForm.feedback = err.message;
-        })
-        .finally(() => {
-          watchedState.rssForm.isInputDisabled = false;
-          input.value = "";
-          input.focus();
-        });
-    });
+      });
+  });
 
   updatePosts(watchedState);
 
-  if (postsDiv)
-    postsDiv.addEventListener("click", (e) => {
-      const { target } = e;
-      const btnId = target.dataset.id; // select <a> or <btn> with "data-id" attribute
+  // if (postsDiv)
+  postsDiv?.addEventListener("click", (e) => {
+    const { target } = e;
+    const btnId = target.dataset.id; // select <a> or <btn> with "data-id" attribute
 
-      if (btnId) {
-        watchedState.modal.modalPostId = btnId;
-        const currentPostIndex = watchedState.posts.findIndex(
-          (post) => post.id === btnId
-        );
-        watchedState.posts[currentPostIndex].isViewed = true;
-      }
-    });
+    if (btnId) {
+      watchedState.modal.modalPostId = btnId;
+      const currentPostIndex = watchedState.posts.findIndex(
+        (post) => post.id === btnId
+      );
+      watchedState.posts[currentPostIndex].isViewed = true;
+    }
+  });
 };

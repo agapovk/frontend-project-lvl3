@@ -20,7 +20,7 @@ export default (state, elements, i18nInstance) => {
     // Feeds
     if (path === "feeds") renderFeeds(state, elements, i18nInstance);
 
-    // Posts
+    // Posts and Modal
     if (state.posts.length > 0) renderPosts(state, elements, i18nInstance);
 
     // Modal

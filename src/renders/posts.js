@@ -5,10 +5,11 @@ const buildButton = (post, i18nInstance) => {
   const { id } = post;
   const btn = document.createElement("button");
   btn.classList.add("btn", "btn-outline-primary", "btn-sm");
-  btn.setAttribute("type", "button");
+  // btn.setAttribute("role", "button");s
   btn.setAttribute("data-id", id);
   btn.setAttribute("data-bs-toggle", "modal");
   btn.setAttribute("data-bs-target", "#postModal");
+  // btn.setAttribute("aria-label", i18nInstance.t("button"));
   btn.textContent = i18nInstance.t("button");
 
   return btn;
