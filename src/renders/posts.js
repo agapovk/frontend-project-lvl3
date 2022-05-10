@@ -8,9 +8,9 @@ const buildButton = (post, i18nInstance) => {
   btn.setAttribute("type", "button");
   btn.setAttribute("data-id", id);
   btn.setAttribute("data-bs-toggle", "modal");
-  btn.setAttribute("data-bs-target", "#postModal");
-  btn.setAttribute("aria-label", i18nInstance.t("button"));
-  btn.textContent = i18nInstance.t("button");
+  btn.setAttribute("data-bs-target", "#modal");
+  // btn.setAttribute("aria-label", i18nInstance.t("button"));
+  btn.textContent = "Просмотр";
 
   return btn;
 };
@@ -45,15 +45,15 @@ const buildListItem = (post) => {
 };
 
 export default (state, elements, i18nInstance) => {
-  const { postsDiv } = elements;
+  const { postsCont } = elements;
   const { posts } = state;
 
-  postsDiv.innerHTML = "";
+  postsCont.innerHTML = "";
 
   const postsTitle = document.createElement("h2");
   postsTitle.classList.add("h3", "p-2");
   postsTitle.textContent = i18nInstance.t("postsTitle");
-  postsDiv.append(postsTitle);
+  postsCont.append(postsTitle);
 
   const ul = document.createElement("ul");
   ul.classList.add("list-group", "border-0", "rounded-0");
@@ -69,5 +69,5 @@ export default (state, elements, i18nInstance) => {
 
   liElements.forEach((li) => ul.append(li));
 
-  postsDiv.append(ul);
+  postsCont.append(ul);
 };

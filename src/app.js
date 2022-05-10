@@ -53,6 +53,7 @@ export default () => {
     feedback: document.querySelector(".feedback"),
     examples: document.querySelectorAll(".example"),
     postsDiv: document.querySelector(".posts"),
+    postsCont: document.querySelector(".postsContainer"),
     feedsDiv: document.querySelector(".feeds"),
     modalTitle: document.querySelector(".modal-title"),
     modalDescription: document.querySelector(".modal-description"),
