@@ -63,7 +63,12 @@ export default () => {
 
   const watchedState = getWatchedState(state, elements, i18nInstance);
 
-  const { form, input, examples, postsDiv } = elements;
+  const {
+		form,
+		input,
+		examples,
+		postsDiv,
+	} = elements;
 
   // easy paste link to input
   examples.forEach((example) => {
@@ -87,7 +92,7 @@ export default () => {
     try {
       validate(
         currentUrl,
-        state.feeds.map((feed) => feed.link)
+        state.feeds.map((feed) => feed.link),
       );
     } catch (err) {
       watchedState.rssForm.isInputDisabled = false;
@@ -146,7 +151,7 @@ export default () => {
     if (btnId) {
       watchedState.modal.modalPostId = btnId;
       const currentPostIndex = watchedState.posts.findIndex(
-        (post) => post.id === btnId
+        (post) => post.id === btnId,
       );
       watchedState.posts[currentPostIndex].isViewed = true;
     }

@@ -20,6 +20,5 @@ export default (watchedState) => {
 
       const newPostsToAdd = [...newPostsWithId, ...watchedState.posts];
       watchedState.posts = newPostsToAdd;
-    })
-  );
+  	}));
 };

@@ -16,7 +16,12 @@ const buildButton = (post, i18nInstance) => {
 };
 
 const buildListItem = (post) => {
-  const { title, link, id, isViewed } = post;
+  const {
+		title,
+		link,
+		id,
+		isViewed
+	} = post;
   const li = document.createElement('li');
   li.classList.add(
     'list-group-item',
@@ -25,7 +30,7 @@ const buildListItem = (post) => {
     'align-items-start',
     'border-0',
     'border-end-0',
-    'p-2'
+    'p-2',
   );
 
   const itemLink = document.createElement('a');
