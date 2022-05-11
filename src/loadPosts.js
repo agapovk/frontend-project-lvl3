@@ -7,8 +7,7 @@ import getFeed from './getFeed.js';
 export default (watchedState) => {
   const requests = watchedState.feeds.map((feed) => getFeed(feed.link));
 
-  return Promise.all(requests).then((data) =>
-    data.forEach((feed) => {
+  return Promise.all(requests).then((data) => data.forEach((feed) => {
       const { posts } = parser(feed.data.contents);
       const newPosts = _.differenceBy(posts, watchedState.posts, 'link');
 
@@ -20,5 +19,6 @@ export default (watchedState) => {
 
       const newPostsToAdd = [...newPostsWithId, ...watchedState.posts];
       watchedState.posts = newPostsToAdd;
-  	}));
+  	}
+	));
 };

@@ -16,12 +16,7 @@ const buildButton = (post, i18nInstance) => {
 };
 
 const buildListItem = (post) => {
-  const {
-		title,
-		link,
-		id,
-		isViewed
-	} = post;
+  const {title, link, id, isViewed} = post;
   const li = document.createElement('li');
   li.classList.add(
     'list-group-item',
