@@ -64,8 +64,8 @@ export default () => {
   const watchedState = getWatchedState(state, elements, i18nInstance);
 
   const {
-		form, input, examples, postsDiv,
-	} = elements;
+    form, input, examples, postsDiv,
+  } = elements;
 
   // easy paste link to input
   examples.forEach((example) => {
