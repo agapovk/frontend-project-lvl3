@@ -5,7 +5,7 @@ install:
 	npm ci
 
 start:
-	npx webpack serve --open
+	npx webpack
 
 build:
 	rm -rf dist
